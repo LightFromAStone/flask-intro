@@ -2,7 +2,7 @@
 
 from random import choice
 
-from flask import Flask, request
+from flask import Flask, request, render_template, url_for
 
 # "__name__" is a special Python variable for the name of the current module
 # Flask wants to know this to know what any imported things are relative to.
@@ -18,28 +18,14 @@ AWESOMENESS = [
 def start_here():
     """Home page."""
 
-    return "<!doctype html><html>Hi! This is the home page.</html>"
+    return render_template('index.html', title='Home Page')
 
 
 @app.route('/hello')
 def say_hello():
     """Say hello and prompt for user's name."""
-
-    return """
-    <!doctype html>
-    <html>
-      <head>
-        <title>Hi There!</title>
-      </head>
-      <body>
-        <h1>Hi There!</h1>
-        <form action="/greet">
-          What's your name? <input type="text" name="person">
-          <input type="submit" value="Submit">
-        </form>
-      </body>
-    </html>
-    """
+    global AWESOMENESS
+    return render_template('hello.html', title='Hi there!', greetings=AWESOMENESS)
 
 
 @app.route('/greet')
@@ -48,22 +34,20 @@ def greet_person():
 
     player = request.args.get("person")
 
-    compliment = choice(AWESOMENESS)
+    compliment = request.args.get("greeting_list")
 
-    return f"""
-    <!doctype html>
-    <html>
-      <head>
-        <title>A Compliment</title>
-      </head>
-      <body>
-        Hi, {player}! I think you're {compliment}!
-      </body>
-    </html>
-    """
+    return render_template('greeting.html', title='A Compliment', player=player, compliment=compliment)
+  
+  
+@app.route('/dis')
+def dis_person():
+  """Insult a person"""
+  insults = ['an idiot', 'brain-dead', 'slow', 'a moron', 'a vegetable']
+  insult = choice(insults)
+  return render_template('dis.html', title='Dis Master', insult=insult)
 
 
 if __name__ == '__main__':
     # debug=True gives us error messages in the browser and also "reloads"
     # our web app if we change the code.
-    app.run(debug=True, host="0.0.0.0")
+    app.run(port=5005, debug=True, host="0.0.0.0")

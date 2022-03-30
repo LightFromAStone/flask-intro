@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Hi There!</h1>
+    <form action="{{ url_for('greet_person') }}">
+        What's your name? <input type="text" name="person">
+        <input type="submit" value="Submit">
+        <select name="greeting_list" id="greeting_list">
+            {% for greeting in greetings %}
+            <option value="{{ greeting }}">{{ greeting }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <form action="{{ url_for('dis_person') }}">
+        Warning! <button>Don't Press Me</button>
+    </form>
+{% endblock %}
